@@ -18,8 +18,7 @@ current_word_idx = 0
 pronounced = False
 wrong_words = []
 
-# Initialize pygame
-pygame.mixer.init(frequency=0, size=0, channels=0)
+pygame.mixer.init()
 
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
