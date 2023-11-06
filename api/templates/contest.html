@@ -110,8 +110,16 @@
         {% endif %}
     </div>
     <script>
+        function playAudio(data) {
+            const audio = new Audio();
+            audio.src = `data:audio/mpeg;base64,${data}`;
+            audio.play();
+        }
+
         function pronounce_word() {
-            fetch('/pronounce').then(response => response.text()).then(data => console.log(data));
+            fetch('/pronounce')
+                .then(response => response.arrayBuffer())
+                .then(data => playAudio(data));
         }
 
         function alt_pronunciation() {
