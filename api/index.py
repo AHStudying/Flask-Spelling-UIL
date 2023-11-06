@@ -26,8 +26,12 @@ def select_words(start_index, end_index, num_words=70):
     else:
         return []
 
-# Generate both standard and alternate pronunciation files
+standard_pronunciation_file = ""
+alt_pronunciation_file = ""
+
 def generate_pronunciation_files(word):
+    global standard_pronunciation_file, alt_pronunciation_file
+
     standard_tts = gTTS(text=word, lang='en')
     alt_tts = gTTS(text=word, lang='en', slow=True)
 
@@ -37,7 +41,8 @@ def generate_pronunciation_files(word):
     standard_tts.save(standard_file.name)
     alt_tts.save(alt_file.name)
 
-    return standard_file.name, alt_file.name
+    standard_pronunciation_file = standard_file.name
+    alt_pronunciation_file = alt_file.name
 
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
@@ -60,7 +65,7 @@ def index():
         wrong_words = []
 
         # Generate pronunciation files for the selected word
-        standard_pronunciation_file, alt_pronunciation_file = generate_pronunciation_files(main_contest_words[current_word_idx])
+        generate_pronunciation_files(main_contest_words[current_word_idx])
 
         return redirect(url_for("contest"))
 
