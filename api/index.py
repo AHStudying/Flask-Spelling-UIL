@@ -18,9 +18,6 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 wrong_words = []
 
-# Create an empty Howler.js playlist
-howler_playlist = []
-
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
@@ -29,19 +26,18 @@ def select_words(start_index, end_index, num_words=70):
     else:
         return []
 
-def play_word(current_word):
-    tts = gTTS(text=current_word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
-    temp_file.close()
-    tts.save(temp_file.name)
+# Generate both standard and alternate pronunciation files
+def generate_pronunciation_files(word):
+    standard_tts = gTTS(text=word, lang='en')
+    alt_tts = gTTS(text=word, lang='en', slow=True)
 
-    try:
-        os.remove(temp_file.name)
-    except PermissionError:
-        pass
+    standard_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    alt_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
 
-    # Add the path to the generated audio file to the Howler.js playlist
-    howler_playlist.append(temp_file.name)
+    standard_tts.save(standard_file.name)
+    alt_tts.save(alt_file.name)
+
+    return standard_file.name, alt_file.name
 
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
@@ -63,8 +59,8 @@ def index():
         current_word_idx = 0
         wrong_words = []
 
-        # Clear the Howler.js playlist when starting a new contest
-        howler_playlist.clear()
+        # Generate pronunciation files for the selected word
+        standard_pronunciation_file, alt_pronunciation_file = generate_pronunciation_files(main_contest_words[current_word_idx])
 
         return redirect(url_for("contest"))
 
@@ -81,6 +77,10 @@ def contest():
         if feedback == True:
             wrong_words.clear()
             current_word_idx += 1
+
+            # Generate pronunciation files for the new word
+            standard_pronunciation_file, alt_pronunciation_file = generate_pronunciation_files(main_contest_words[current_word_idx])
+
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
@@ -95,24 +95,17 @@ def contest():
     else:
         return redirect(url_for("index"))
 
-@app.route("/pronounce")
-def pronounce_word():
-    # Get the path to the audio file from the Howler.js playlist
-    audio_file = howler_playlist[current_word_idx]
-    return send_file(audio_file, mimetype='audio/mpeg', as_attachment=True)
+@app.route("/pronounce_standard")
+def pronounce_standard():
+    # Return the standard pronunciation file
+    return send_file(standard_pronunciation_file, mimetype='audio/mpeg', as_attachment=True)
+
+@app.route("/pronounce_alternate")
+def pronounce_alternate():
+    # Return the alternate pronunciation file
+    return send_file(alt_pronunciation_file, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
-    alt_text = main_contest_words[current_word_idx]
-
-    def tts_thread(text):
-        engine = pyttsx3.init()
-        engine.setProperty("rate", 150)
-        engine.setProperty("voice", "com.apple.speech.synthesis.voice.Agnes")
-        engine.say(text)
-        engine.runAndWait()
-        engine.stop()
-
-    threading.Thread(target=tts_thread, args=(alt_text,)).start()
-
-    return "Alt Pronunciation"
+    # You can implement alt pronunciation logic if needed
+    pass
