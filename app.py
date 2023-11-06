@@ -6,7 +6,7 @@ import pygame
 import tempfile
 import time
 
-app = Flask(__name)
+app = Flask(__name__)
 
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
