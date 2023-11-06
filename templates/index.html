@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spelling UIL Practice Test</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 400px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        label {
+            font-size: 16px;
+        }
+        button {
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            font-size: 16px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .dark-mode {
+            background-color: #444444;
+        }
+        .range-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .range-slider {
+            width: 100%;
+            margin: 20px 0;
+            position: relative;
+        }
+        .credits {
+            position: absolute;
+            bottom: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container dark-mode">
+        <h1>Spelling Contest</h1>
+        <div class="range-container">
+            <h2>Choose the range of words to study:</h2>
+            <div class="range-slider" id="range-slider"></div>
+        </div>
+        <form method="POST">
+            <label for="start_index">Start Index:</label>
+            <input type="number" name="start_index" id="start_index" required>
+            <br>
+            <label for="end_index">End Index:</label>
+            <input type="number" name="end_index" id="end_index" required>
+            <br>
+            <button type="submit">Start Contest</button>
+        </form>
+    </div>
+    <div class="credits">
+        <p>Credits to <a href="https://github.com/Calc-oholic/">Calc-oholic</a></p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js"></script>
+    <script>
+        const rangeSlider = document.getElementById('range-slider');
+        const startRange = document.getElementById('start_index');
+        const endRange = document.getElementById('end_index');
+
+        const sliderRange = {
+            min: 1,
+            max: 1500,
+        };
+
+        noUiSlider.create(rangeSlider, {
+            start: [375, 1125],
+            connect: true,
+            range: sliderRange,
+        });
+
+        rangeSlider.noUiSlider.on('update', function (values) {
+            startRange.value = Math.round(values[0]);
+            endRange.value = Math.round(values[1]);
+        });
+    </script>
+</body>
+</html>
