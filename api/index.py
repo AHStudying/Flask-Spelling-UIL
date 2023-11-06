@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for
 import random
 from gtts import gTTS
 import os
@@ -93,8 +93,8 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    audio_file = play_word(main_contest_words[current_word_idx])
-    return send_file(audio_file, mimetype='audio/mpeg')
+    audio_data = play_word(main_contest_words[current_word_idx])
+    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
