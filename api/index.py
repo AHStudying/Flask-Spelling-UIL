@@ -33,18 +33,14 @@ def play_word(current_word):
     temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
-    
-    # Read the mp3 file into a bytes object
-    audio_data = io.BytesIO()
-    with open(temp_file.name, 'rb') as audio_file:
-        audio_data.write(audio_file.read())
+
+    audio = AudioSegment.from_mp3(temp_file.name)
+    play(audio)
     
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
-    
-    return audio_data
         
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
