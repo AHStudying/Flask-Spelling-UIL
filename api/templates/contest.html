@@ -71,12 +71,6 @@
             font-size: 14px;
             color: #888;
         }
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -115,23 +109,9 @@
             <p>{{ feedback }}</p>
         {% endif %}
     </div>
-    <div class="audio-controls">
-        <audio id="pronunciationAudio" controls style="display: none;"></audio>
-    </div>
     <script>
         function pronounce_word() {
-            fetch('/pronounce')
-                .then(response => response.blob())
-                .then(blob => {
-                    const dataUrl = URL.createObjectURL(blob);
-                    playAudio(dataUrl);
-                });
-        }
-
-        function playAudio(dataUrl) {
-            const audio = document.getElementById('pronunciationAudio');
-            audio.src = dataUrl;
-            audio.play();
+            fetch('/pronounce').then(response => response.text()).then(data => console.log(data));
         }
 
         function alt_pronunciation() {
