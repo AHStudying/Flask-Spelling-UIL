@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import random
 from gtts import gTTS
 import os
@@ -6,13 +6,8 @@ import tempfile
 import pyttsx3
 import threading
 from pydub import AudioSegment
-from pygame import mixer  # Import pygame.mixer
-from pydub.playback import play
 
 app = Flask(__name__)
-
-# Initialize pygame.mixer
-mixer.init()
 
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -21,7 +16,6 @@ def load_word_list(filename):
 word_list = load_word_list("words.txt")
 
 current_word_idx = 0
-pronounced = False
 wrong_words = []
 
 def select_words(start_index, end_index, num_words=70):
@@ -38,17 +32,12 @@ def play_word(current_word):
     temp_file.close()
     tts.save(temp_file.name)
 
-    audio = AudioSegment.from_mp3(temp_file.name)
-    play(audio)
-
-    # Play the audio using pygame.mixer
-    mixer.music.load(temp_file.name)
-    mixer.music.play()
-
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
+
+    return temp_file.name  # Return the path to the generated audio file
 
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
@@ -76,8 +65,6 @@ def index():
 
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
-    global current_word_idx, pronounced
-
     if request.method == "POST":
         user_input = request.form["user_input"]
         feedback = check_word(user_input)
@@ -89,7 +76,6 @@ def contest():
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
-            pronounced = False
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback)
         else:
             return redirect(url_for("index"))
@@ -101,13 +87,11 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    audio_data = play_word(main_contest_words[current_word_idx])
-    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
+    audio_file = play_word(main_contest_words[current_word_idx])
+    return send_file(audio_file, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
-    global current_word_idx
-
     alt_text = main_contest_words[current_word_idx]
 
     def tts_thread(text):
