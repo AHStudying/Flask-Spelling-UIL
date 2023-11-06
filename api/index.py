@@ -6,9 +6,13 @@ import tempfile
 import pyttsx3
 import threading
 from pydub import AudioSegment
+from pygame import mixer  # Import pygame.mixer
 from pydub.playback import play
 
 app = Flask(__name__)
+
+# Initialize pygame.mixer
+mixer.init()
 
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -36,12 +40,16 @@ def play_word(current_word):
 
     audio = AudioSegment.from_mp3(temp_file.name)
     play(audio)
-    
+
+    # Play the audio using pygame.mixer
+    mixer.music.load(temp_file.name)
+    mixer.music.play()
+
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
-        
+
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
         if user_input == main_contest_words[current_word_idx]:
