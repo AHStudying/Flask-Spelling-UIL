@@ -34,16 +34,17 @@ def play_word(current_word):
     temp_file.close()
     tts.save(temp_file.name)
     
-    # Convert the mp3 file to wav format for pydub
-    sound = AudioSegment.from_mp3(temp_file.name)
-    
-    # Play the audio
-    play(sound)
+    # Read the mp3 file into a bytes object
+    audio_data = io.BytesIO()
+    with open(temp_file.name, 'rb') as audio_file:
+        audio_data.write(audio_file.read())
     
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
+    
+    return audio_data
         
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
@@ -96,10 +97,8 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    global pronounced
-    if not pronounced:
-        play_word(main_contest_words[current_word_idx])
-    return "Pronounced"
+    audio_data = play_word(main_contest_words[current_word_idx])
+    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
