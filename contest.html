@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spelling Contest</title>
+    <style>
+        body {
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 400px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        label {
+            font-size: 16px;
+        }
+        input[type="text"] {
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            font-size: 16px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .credits {
+            position: absolute;
+            bottom: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .tip {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spelling Contest</h1>
+        <form method="POST">
+            <h2>Word {{ current_word_idx + 1 }}/{{ total_words }}</h2>
+            <label for="user_input">Type the word:</label>
+            <input type="text" name="user_input" id="user_input" required>
+            <br>
+            <button type="button" onclick="pronounce_word();">Pronounce</button>
+            <button type="button" onclick="alt_pronunciation();">Alt Pronunciation</button>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+        <div>
+            <p>Score: {{ current_word_idx }}/{{ total_words }}</p>
+        </div>
+        <div>
+            <h2>Wrong Words:</h2>
+            <ul>
+                {% for word, input in wrong_words %}
+                    <li>{{ word[0] }} (You typed: {{ input }}) - Correct Answer: {{ word[1] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="tip">
+        <p>Tip: Hold Shift and press Enter in the text box to pronounce the word.</p>
+    </div>
+    <div class="credits">
+        <p>Credits to <a href="https://github.com/Calc-oholic/">Calc-oholic</a></p>
+    </div>
+    <div>
+        {% if feedback %}
+            <p>{{ feedback }}</p>
+        {% endif %}
+    </div>
+    <script>
+        function pronounce_word() {
+            fetch('/pronounce').then(response => response.text()).then(data => console.log(data));
+        }
+
+        function alt_pronunciation() {
+            fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
+        }
+
+        window.addEventListener('load', function() {
+            document.getElementById('user_input').focus();
+        });
+
+        document.getElementById('user_input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                pronounce_word();
+            }
+        });
+    </script>
+</body>
+</html>
