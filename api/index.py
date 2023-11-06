@@ -10,7 +10,7 @@ import pyttsx3
 app = Flask(__name__)
 
 def load_word_list(filename):
-    with open(filename, "r", encoding="utf-8") as file:
+    with open(f"static/{filename}", "r", encoding="utf-8") as file:
         return [line.strip() for line in file]
 
 word_list = load_word_list("words.txt")
