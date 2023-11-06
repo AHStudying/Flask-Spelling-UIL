@@ -2,9 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import random
 from gtts import gTTS
 import os
-import pygame
 import tempfile
-import time
 import pyttsx3
 import threading
 
@@ -20,8 +18,6 @@ current_word_idx = 0
 pronounced = False
 wrong_words = []
 
-pygame.mixer.init()
-
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
@@ -35,9 +31,7 @@ def play_word(current_word):
     temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
-    pygame.mixer.music.load(temp_file.name)
-    pygame.mixer.music.play()
-    time.sleep(2)
+    os.system(f"mpg123 {temp_file.name}")  # Use mpg123 for audio playback
     try:
         os.remove(temp_file.name)
     except PermissionError:
