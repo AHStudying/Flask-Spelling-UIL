@@ -6,6 +6,7 @@ import pygame
 import tempfile
 import time
 import pyttsx3
+import threading
 
 app = Flask(__name__)
 
@@ -18,9 +19,6 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 pronounced = False
 wrong_words = []
-
-engine = pyttsx3.init()
-engine.setProperty("rate", 150)
 
 pygame.mixer.init()
 
@@ -101,16 +99,20 @@ def pronounce_word():
         play_word(main_contest_words[current_word_idx])
     return "Pronounced"
 
-
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
-    global pronounced
-    if engine.isBusy():
-        while engine.isBusy():
-            pass
+    global current_word_idx
 
-    engine.setProperty("voice", "com.apple.speech.synthesis.voice.Alex")
-    engine.say(main_contest_words[current_word_idx])
-    engine.runAndWait()
+    alt_text = main_contest_words[current_word_idx]
+
+    def tts_thread(text):
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 150)
+        engine.setProperty("voice", "com.apple.speech.synthesis.voice.Agnes")
+        engine.say(text)
+        engine.runAndWait()
+        engine.stop()
+
+    threading.Thread(target=tts_thread, args=(alt_text,)).start()
 
     return "Alt Pronunciation"
