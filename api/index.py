@@ -18,6 +18,9 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 wrong_words = []
 
+# Create an empty Howler.js playlist
+howler_playlist = []
+
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
@@ -37,7 +40,8 @@ def play_word(current_word):
     except PermissionError:
         pass
 
-    return temp_file.name  # Return the path to the generated audio file
+    # Add the path to the generated audio file to the Howler.js playlist
+    howler_playlist.append(temp_file.name)
 
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
@@ -59,13 +63,16 @@ def index():
         current_word_idx = 0
         wrong_words = []
 
+        # Clear the Howler.js playlist when starting a new contest
+        howler_playlist.clear()
+
         return redirect(url_for("contest"))
 
     return render_template("index.html")
 
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
-    global current_word_idx  # Add this line to declare current_word_idx as global
+    global current_word_idx
 
     if request.method == "POST":
         user_input = request.form["user_input"]
@@ -90,7 +97,8 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    audio_file = play_word(main_contest_words[current_word_idx])
+    # Get the path to the audio file from the Howler.js playlist
+    audio_file = howler_playlist[current_word_idx]
     return send_file(audio_file, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
