@@ -111,17 +111,21 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.3.2/howler.min.js"></script>
     <script>
-        var audioPlayer = new Howl({
-            src: ['/pronounce'],  // Replace with the correct audio endpoint
-        });
+        var standardPlayer = new Howl({
+        src: ['/pronounce_standard'],
+    });
 
-        function pronounce_word() {
-            audioPlayer.play();
-        }
+    var altPlayer = new Howl({
+        src: ['/pronounce_alternate'],
+    });
 
-        function alt_pronunciation() {
-            // Implement alt pronunciation logic if needed
-        }
+    function pronounce_word() {
+        standardPlayer.play();
+    }
+
+    function alt_pronunciation() {
+        altPlayer.play();
+    }
 
         window.addEventListener('load', function() {
             document.getElementById('user_input').focus();
