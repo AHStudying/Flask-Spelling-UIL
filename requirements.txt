@@ -16,3 +16,5 @@ requests
 urllib3
 Werkzeug
 Gunicorn
+pypiwin32
+pywin32
