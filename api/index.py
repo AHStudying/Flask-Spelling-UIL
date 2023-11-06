@@ -19,10 +19,9 @@ current_word_idx = 0
 pronounced = False
 wrong_words = []
 
-engine = pyttsx3.init(driverName='sapi5')
+engine = pyttsx3.init()
 engine.setProperty("rate", 150)
 
-# Initialize pygame
 pygame.mixer.init()
 
 def select_words(start_index, end_index, num_words=70):
