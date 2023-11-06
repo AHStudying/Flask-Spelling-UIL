@@ -2,11 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for
 import random
 from gtts import gTTS
 import os
-import pygame
 import tempfile
-import time
 import pyttsx3
 import threading
+from pydub import AudioSegment
+from pydub.playback import play
 
 app = Flask(__name__)
 
@@ -19,8 +19,6 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 pronounced = False
 wrong_words = []
-
-pygame.mixer.init()
 
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
@@ -35,14 +33,15 @@ def play_word(current_word):
     temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
-    pygame.mixer.music.load(temp_file.name)
-    pygame.mixer.music.play()
-    time.sleep(2)
+
+    audio = AudioSegment.from_mp3(temp_file.name)
+    play(audio)
+    
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
-
+        
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
         if user_input == main_contest_words[current_word_idx]:
@@ -94,10 +93,8 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    global pronounced
-    if not pronounced:
-        play_word(main_contest_words[current_word_idx])
-    return "Pronounced"
+    audio_data = play_word(main_contest_words[current_word_idx])
+    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
