@@ -5,6 +5,8 @@ import os
 import tempfile
 import pyttsx3
 import threading
+from pydub import AudioSegment
+from pydub.playback import play
 
 app = Flask(__name__)
 
@@ -28,22 +30,21 @@ def select_words(start_index, end_index, num_words=70):
 
 def play_word(current_word):
     tts = gTTS(text=current_word, lang='en')
-
     temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
     temp_file.close()
-
-    try:
-        tts.save(temp_file.name)
-        os.system(f"mpg123 {temp_file.name}")  # Use mpg123 for audio playback
-    except Exception as e:
-        # Handle any exceptions during TTS generation
-        print(f"Error during TTS generation: {str(e)}")
-
+    tts.save(temp_file.name)
+    
+    # Convert the mp3 file to wav format for pydub
+    sound = AudioSegment.from_mp3(temp_file.name)
+    
+    # Play the audio
+    play(sound)
+    
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
-
+        
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
         if user_input == main_contest_words[current_word_idx]:
