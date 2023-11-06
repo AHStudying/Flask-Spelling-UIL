@@ -5,8 +5,6 @@ import os
 import tempfile
 import pyttsx3
 import threading
-from pydub import AudioSegment
-from pydub.playback import play
 
 app = Flask(__name__)
 
@@ -33,19 +31,12 @@ def play_word(current_word):
     temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
-    
-    # Read the mp3 file into a bytes object
-    audio_data = io.BytesIO()
-    with open(temp_file.name, 'rb') as audio_file:
-        audio_data.write(audio_file.read())
-    
+    os.system(f"mpg123 {temp_file.name}")  # Use mpg123 for audio playback
     try:
         os.remove(temp_file.name)
     except PermissionError:
         pass
-    
-    return audio_data
-        
+
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
         if user_input == main_contest_words[current_word_idx]:
@@ -97,8 +88,10 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    audio_data = play_word(main_contest_words[current_word_idx])
-    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
+    global pronounced
+    if not pronounced:
+        play_word(main_contest_words[current_word_idx])
+    return "Pronounced"
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
