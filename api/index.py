@@ -36,7 +36,7 @@ def play_word(current_word):
 
     audio = AudioSegment.from_mp3(temp_file.name)
     play(audio)
-    
+
     try:
         os.remove(temp_file.name)
     except PermissionError:
