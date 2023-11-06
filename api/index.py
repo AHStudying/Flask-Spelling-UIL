@@ -30,17 +30,9 @@ def select_words(start_index, end_index, num_words=70):
 
 def play_word(current_word):
     tts = gTTS(text=current_word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
-    temp_file.close()
-    tts.save(temp_file.name)
+    audio_data = tts.get_audio_data()
 
-    audio = AudioSegment.from_mp3(temp_file.name)
-    play(audio)
-
-    try:
-        os.remove(temp_file.name)
-    except PermissionError:
-        pass
+    return audio_data
         
 def check_word(user_input):
     if current_word_idx < len(main_contest_words):
