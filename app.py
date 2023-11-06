@@ -5,9 +5,8 @@ import os
 import pygame
 import tempfile
 import time
-import pyttsx3
 
-app = Flask(__name__)
+app = Flask(__name)
 
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -18,9 +17,6 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 pronounced = False
 wrong_words = []
-
-engine = pyttsx3.init()
-engine.setProperty("rate", 150)
 
 # Initialize pygame
 pygame.mixer.init()
@@ -104,8 +100,8 @@ def pronounce_word():
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
-    engine.setProperty("voice", "com.apple.speech.synthesis.voice.Agnes")
-    engine.say(main_contest_words[current_word_idx])
-    engine.runAndWait()
-
+    # If you want to use a different TTS library for alternate pronunciation, implement it here
     return "Alt Pronunciation"
+
+if __name__ == "__main__":
+    app.run(debug=True)
