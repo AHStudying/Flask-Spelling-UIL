@@ -19,7 +19,7 @@ current_word_idx = 0
 pronounced = False
 wrong_words = []
 
-engine = pyttsx3.init()
+engine = pyttsx3.init(driverName='sapi5')
 engine.setProperty("rate", 150)
 
 # Initialize pygame
