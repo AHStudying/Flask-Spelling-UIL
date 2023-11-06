@@ -30,8 +30,20 @@ def select_words(start_index, end_index, num_words=70):
 
 def play_word(current_word):
     tts = gTTS(text=current_word, lang='en')
-    audio_data = tts.get_audio_data()
-
+    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    temp_file.close()
+    tts.save(temp_file.name)
+    
+    # Read the mp3 file into a bytes object
+    audio_data = io.BytesIO()
+    with open(temp_file.name, 'rb') as audio_file:
+        audio_data.write(audio_file.read())
+    
+    try:
+        os.remove(temp_file.name)
+    except PermissionError:
+        pass
+    
     return audio_data
         
 def check_word(user_input):
