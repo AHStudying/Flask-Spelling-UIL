@@ -65,6 +65,8 @@ def index():
 
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
+    global current_word_idx  # Add this line to declare current_word_idx as global
+
     if request.method == "POST":
         user_input = request.form["user_input"]
         feedback = check_word(user_input)
@@ -76,6 +78,7 @@ def contest():
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
+            pronounced = False
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback)
         else:
             return redirect(url_for("index"))
