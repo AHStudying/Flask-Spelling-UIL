@@ -1,3 +1,3 @@
 # It only took me 143 commits.
 
-Alternate pronunciation is still broken, though.
+Only works for the first word, and only pronunciation (normal) for now haha.
