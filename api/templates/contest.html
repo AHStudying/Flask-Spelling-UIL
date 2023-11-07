@@ -109,23 +109,14 @@
             <p>{{ feedback }}</p>
         {% endif %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.3.2/howler.min.js"></script>
-<script>
-    var standardPlayer = new Howl({
-        src: ['/pronounce_standard'], 
-    });
+    <script>
+        function pronounce_word() {
+            fetch('/pronounce').then(response => response.text()).then(data => console.log(data));
+        }
 
-    var altPlayer = new Howl({
-        src: ['/pronounce_alternate'],
-    });
-
-    function pronounce_word() {
-        standardPlayer.play();
-    }
-
-    function alt_pronunciation() {
-        altPlayer.play();
-    }
+        function alt_pronunciation() {
+            fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
+        }
 
         window.addEventListener('load', function() {
             document.getElementById('user_input').focus();
