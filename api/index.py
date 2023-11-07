@@ -1,12 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import random
 from gtts import gTTS
 import os
 import tempfile
-import pyttsx3
 import threading
-from pydub import AudioSegment
-from pydub.playback import play
 import io
 
 app = Flask(__name)
@@ -18,7 +15,6 @@ def load_word_list(filename):
 word_list = load_word_list("words.txt")
 
 current_word_idx = 0
-pronounced = False
 wrong_words = []
 
 def select_words(start_index, end_index, num_words=70):
@@ -73,20 +69,18 @@ def index():
 
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
-    global current_word_idx, pronounced
+    global current_word_idx
 
     if request.method == "POST":
         user_input = request.form["user_input"]
         feedback = check_word(user_input)
 
         if feedback == True:
-            wrong_words.clear()
             current_word_idx += 1
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
-            pronounced = False
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback)
         else:
             return redirect(url_for("index"))
@@ -99,7 +93,7 @@ def contest():
 @app.route("/pronounce")
 def pronounce_word():
     audio_data = play_word(main_contest_words[current_word_idx])
-    return send_from_directory("static", "pronounce.mp3")
+    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
