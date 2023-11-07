@@ -109,15 +109,10 @@
             <p>{{ feedback }}</p>
         {% endif %}
     </div>
-    <!-- Include Howler.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script>
-        var sound = new Howl({
-            src: ['/pronounce'],
-        });
-
         function pronounce_word() {
-            sound.play();
+            var audio = new Audio("/pronounce");
+            audio.play();
         }
 
         function alt_pronunciation() {
