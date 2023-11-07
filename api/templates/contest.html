@@ -109,9 +109,17 @@
             <p>{{ feedback }}</p>
         {% endif %}
     </div>
+    <!-- Include Howler.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script>
         function pronounce_word() {
-            fetch('/pronounce').then(response => response.text()).then(data => console.log(data));
+            fetch('/pronounce').then(response => response.blob()).then(data => {
+                const blobUrl = URL.createObjectURL(data);
+                const sound = new Howl({
+                    src: [blobUrl],
+                });
+                sound.play();
+            });
         }
 
         function alt_pronunciation() {
