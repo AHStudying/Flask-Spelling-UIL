@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, Response
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import random
 from gtts import gTTS
 import os
@@ -7,8 +7,9 @@ import pyttsx3
 import threading
 from pydub import AudioSegment
 from pydub.playback import play
+import io
 
-app = Flask(__name__)
+app = Flask(__name)
 
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
@@ -98,7 +99,7 @@ def contest():
 @app.route("/pronounce")
 def pronounce_word():
     audio_data = play_word(main_contest_words[current_word_idx])
-    return Response(audio_data, content_type='audio/mpeg')
+    return send_from_directory("static", "pronounce.mp3")
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
