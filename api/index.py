@@ -93,7 +93,7 @@ def contest():
 @app.route("/pronounce")
 def pronounce_word():
     audio_data = play_word(main_contest_words[current_word_idx])
-    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True)
+    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
 
 @app.route("/alt_pronunciation")
 def alt_pronunciation():
