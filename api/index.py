@@ -112,3 +112,6 @@ def alt_pronunciation():
     threading.Thread(target=tts_thread, args=(alt_text,)).start()
 
     return "Alt Pronunciation"
+
+if __name__ == "__main__":
+    app.run()
