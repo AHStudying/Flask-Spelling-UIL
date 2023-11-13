@@ -115,9 +115,10 @@
     </div>
     <script>
         function pronounce_word() {
-            var audio = new Audio("/pronounce");
+            var audio = new Audio("/pronounce?timestamp=" + new Date().getTime());
             audio.play();
         }
+
 
         window.addEventListener('load', function() {
             document.getElementById('user_input').focus();
