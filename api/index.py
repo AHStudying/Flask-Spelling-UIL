@@ -3,7 +3,6 @@ import random
 from gtts import gTTS
 import os
 import tempfile
-import threading
 import io
 
 app = Flask(__name__)
@@ -42,8 +41,10 @@ def generate_and_play_word(word):
         pass
 
     return audio_data
-        
+
 def check_word(user_input):
+    global current_word_idx, main_contest_words
+
     if current_word_idx < len(main_contest_words):
         if user_input == main_contest_words[current_word_idx]:
             return True
@@ -63,32 +64,28 @@ def index():
         current_word_idx = 0
         wrong_words = []
 
-        return redirect(url_for("contest"))
+        # Generate and play the pronunciation for the first word
+        audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
 
     return render_template("index.html")
 
-@app.route("/contest", methods=["GET", "POST"])
+@app.route("/contest", methods=["POST"])
 def contest():
     global current_word_idx, main_contest_words, wrong_words
 
-    if request.method == "POST":
-        user_input = request.form["user_input"]
-        feedback = check_word(user_input)
+    user_input = request.form["user_input"]
+    feedback = check_word(user_input)
 
-        if feedback == True:
-            current_word_idx += 1
-        else:
-            wrong_words.append((main_contest_words[current_word_idx], user_input))
-
-        if current_word_idx < len(main_contest_words):
-            audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
-        else:
-            return redirect(url_for("index"))
+    if feedback == True:
+        current_word_idx += 1
+    else:
+        wrong_words.append((main_contest_words[current_word_idx], user_input))
 
     if current_word_idx < len(main_contest_words):
+        # Generate and play the pronunciation for the next word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
     else:
         return redirect(url_for("index"))
 
@@ -97,24 +94,6 @@ def pronounce_word():
     global current_word_idx, main_contest_words
     audio_data = generate_and_play_word(main_contest_words[current_word_idx])
     return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
-
-@app.route("/alt_pronunciation")
-def alt_pronunciation():
-    global current_word_idx
-
-    alt_text = main_contest_words[current_word_idx]
-
-    def tts_thread(text):
-        engine = pyttsx3.init()
-        engine.setProperty("rate", 150)
-        engine.setProperty("voice", "com.apple.speech.synthesis.voice.Agnes")
-        engine.say(text)
-        engine.runAndWait()
-        engine.stop()
-
-    threading.Thread(target=tts_thread, args=(alt_text,)).start()
-
-    return "Alt Pronunciation"
 
 if __name__ == "__main__":
     app.run()
