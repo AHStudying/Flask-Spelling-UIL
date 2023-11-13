@@ -92,7 +92,7 @@ def contest():
 def pronounce_word():
     global current_word_idx, main_contest_words
     audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-    return Response(audio_data, mimetype='audio/mpeg')
+    return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
 
 if __name__ == "__main__":
     app.run()
