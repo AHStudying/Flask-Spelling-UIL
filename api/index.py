@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 import random
 from gtts import gTTS
 import os
@@ -31,9 +31,7 @@ def generate_and_play_word(word):
     tts.save(temp_file.name)
 
     # Read the mp3 file into a bytes object
-    audio_data = io.BytesIO()
-    with open(temp_file.name, 'rb') as audio_file:
-        audio_data.write(audio_file.read())
+    audio_data = open(temp_file.name, 'rb').read()
 
     try:
         os.remove(temp_file.name)
@@ -41,6 +39,7 @@ def generate_and_play_word(word):
         pass
 
     return audio_data
+
 
 def check_word(user_input):
     global current_word_idx, main_contest_words
@@ -93,7 +92,7 @@ def contest():
 def pronounce_word():
     global current_word_idx, main_contest_words
     audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-    return send_file(audio_data, mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
+    return Response(audio_data, mimetype='audio/mpeg')
 
 if __name__ == "__main__":
     app.run()
