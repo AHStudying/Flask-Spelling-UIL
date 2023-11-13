@@ -76,20 +76,18 @@
 <body>
     <div class="container">
         <h1>Spelling Contest</h1>
-        <form method="POST">
-            <h2>Word {{ current_word_idx + 1 }}/{{ total_words }}</h2>
-            <label for="user_input">Type the word:</label>
-            <input type="text" name="user_input" id="user_input" required>
-            <br>
-            <button type="button" onclick="pronounce_word();">Pronounce</button>
-            <audio id="audio-player" controls style="display: none;">
-                <source src="/pronounce" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            <button type="button" onclick="alt_pronunciation();">Alt Pronunciation</button>
-            <br>
-            <button type="submit">Submit</button>
-        </form>
+        <form method="POST" action="{{ url_for('contest') }}">
+    <h2>Word {{ current_word_idx + 1 }}/{{ total_words }}</h2>
+    <label for="user_input">Type the word:</label>
+    <input type="text" name="user_input" id="user_input" required>
+    <br>
+    <button type="button" onclick="pronounce_word();">Pronounce</button>
+    <audio id="audio-player" controls style="display: none;">
+        <source src="{{ url_for('pronounce_word') }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <button type="submit">Submit</button>
+</form>
         <div>
             <p>Score: {{ current_word_idx }}/{{ total_words }}</p>
         </div>
