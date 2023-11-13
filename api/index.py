@@ -69,22 +69,30 @@ def index():
 
     return render_template("index.html")
 
-@app.route("/contest", methods=["POST"])
+@app.route("/contest", methods=["GET", "POST"])
 def contest():
     global current_word_idx, main_contest_words, wrong_words
 
-    user_input = request.form["user_input"]
-    feedback = check_word(user_input)
+    if request.method == "POST":
+        user_input = request.form["user_input"]
+        feedback = check_word(user_input)
 
-    if feedback == True:
-        current_word_idx += 1
-    else:
-        wrong_words.append((main_contest_words[current_word_idx], user_input))
+        if feedback == True:
+            current_word_idx += 1
+        else:
+            wrong_words.append((main_contest_words[current_word_idx], user_input))
+
+        if current_word_idx < len(main_contest_words):
+            # Generate and play the pronunciation for the next word
+            audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
+        else:
+            return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
-        # Generate and play the pronunciation for the next word
+        # Generate and play the pronunciation for the current word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
     else:
         return redirect(url_for("index"))
 
