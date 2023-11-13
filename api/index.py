@@ -16,6 +16,7 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 main_contest_words = []
 wrong_words = []
+temp_file_name = None
 
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
@@ -26,18 +27,19 @@ def select_words(start_index, end_index, num_words=70):
         return []
 
 def generate_and_play_word(word):
+    global temp_file_name
+    if temp_file_name:
+        try:
+            os.remove(temp_file_name)
+        except PermissionError:
+            pass
+
     tts = gTTS(text=word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
-    temp_file.close()
-    tts.save(temp_file.name)
+    temp_file_name = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False).name
+    tts.save(temp_file_name)
 
     # Read the mp3 file into a bytes object
-    audio_data = open(temp_file.name, 'rb').read()
-
-    try:
-        os.remove(temp_file.name)
-    except PermissionError:
-        pass
+    audio_data = open(temp_file_name, 'rb').read()
 
     return audio_data
 
@@ -54,7 +56,7 @@ def check_word(user_input):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global current_word_idx, main_contest_words, wrong_words
+    global current_word_idx, main_contest_words, wrong_words, temp_file_name
 
     if request.method == "POST":
         start_index = int(request.form["start_index"])
@@ -71,7 +73,7 @@ def index():
 
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
-    global current_word_idx, main_contest_words, wrong_words
+    global current_word_idx, main_contest_words, wrong_words, temp_file_name
 
     if request.method == "POST":
         user_input = request.form["user_input"]
@@ -79,15 +81,11 @@ def contest():
 
         if feedback == True:
             current_word_idx += 1
-        else:
-            wrong_words.append((main_contest_words[current_word_idx], user_input))
-
-        if current_word_idx < len(main_contest_words):
             # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
         else:
-            return redirect(url_for("index"))
+            wrong_words.append((main_contest_words[current_word_idx], user_input))
 
     if current_word_idx < len(main_contest_words):
         # Generate and play the pronunciation for the current word
@@ -98,8 +96,8 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    global current_word_idx, main_contest_words
-    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+    global current_word_idx, main_contest_words, temp_file_name
+    audio_data = open(temp_file_name, 'rb').read()
     return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
 
 if __name__ == "__main__":
