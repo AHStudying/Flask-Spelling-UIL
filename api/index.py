@@ -31,11 +31,10 @@ def select_words(start_index, end_index, num_words=70):
 # Generate and play word pronunciation
 def generate_and_play_word(word):
     tts = gTTS(text=word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    temp_file = tempfile.NamedTemporaryFile(suffix=f"_{word}.mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
 
-    # Read the mp3 file into a bytes object
     audio_data = open(temp_file.name, 'rb').read()
 
     try:
@@ -103,14 +102,16 @@ def contest():
     else:
         return redirect(url_for("index"))
 
-# Route for playing the pronunciation
 @app.route("/pronounce")
 def pronounce_word():
     global current_word_idx, main_contest_words
-    # Append a timestamp to the file name to force the browser to fetch a new file
-    timestamp = int(time.time())
-    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-    return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{current_word_idx}_{timestamp}.mp3')
+
+    if current_word_idx < len(main_contest_words):
+        word = main_contest_words[current_word_idx]
+        audio_data = generate_and_play_word(word)
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
+    else:
+        return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
 
 if __name__ == "__main__":
     app.run(debug=True)
