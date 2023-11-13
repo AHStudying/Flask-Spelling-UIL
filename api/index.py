@@ -4,9 +4,11 @@ from gtts import gTTS
 import os
 import tempfile
 import io
+import time  # Import the time module
 
 app = Flask(__name__)
 
+# Load word list
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
         return [line.strip() for line in file]
@@ -16,8 +18,8 @@ word_list = load_word_list("words.txt")
 current_word_idx = 0
 main_contest_words = []
 wrong_words = []
-temp_file_name = None
 
+# Select words for the contest
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
@@ -26,23 +28,24 @@ def select_words(start_index, end_index, num_words=70):
     else:
         return []
 
+# Generate and play word pronunciation
 def generate_and_play_word(word):
-    global temp_file_name
-    if temp_file_name:
-        try:
-            os.remove(temp_file_name)
-        except PermissionError:
-            pass
-
     tts = gTTS(text=word, lang='en')
-    temp_file_name = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False).name
-    tts.save(temp_file_name)
+    temp_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    temp_file.close()
+    tts.save(temp_file.name)
 
     # Read the mp3 file into a bytes object
-    audio_data = open(temp_file_name, 'rb').read()
+    audio_data = open(temp_file.name, 'rb').read()
+
+    try:
+        os.remove(temp_file.name)
+    except PermissionError:
+        pass
 
     return audio_data
 
+# Check user input against the correct word
 def check_word(user_input):
     global current_word_idx, main_contest_words
 
@@ -54,9 +57,10 @@ def check_word(user_input):
             return feedback
     return False
 
+# Route for the home page
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global current_word_idx, main_contest_words, wrong_words, temp_file_name
+    global current_word_idx, main_contest_words, wrong_words
 
     if request.method == "POST":
         start_index = int(request.form["start_index"])
@@ -71,9 +75,10 @@ def index():
 
     return render_template("index.html")
 
+# Route for the contest page
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
-    global current_word_idx, main_contest_words, wrong_words, temp_file_name
+    global current_word_idx, main_contest_words, wrong_words
 
     if request.method == "POST":
         user_input = request.form["user_input"]
@@ -81,11 +86,15 @@ def contest():
 
         if feedback == True:
             current_word_idx += 1
+        else:
+            wrong_words.append((main_contest_words[current_word_idx], user_input))
+
+        if current_word_idx < len(main_contest_words):
             # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
         else:
-            wrong_words.append((main_contest_words[current_word_idx], user_input))
+            return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
         # Generate and play the pronunciation for the current word
@@ -94,11 +103,14 @@ def contest():
     else:
         return redirect(url_for("index"))
 
+# Route for playing the pronunciation
 @app.route("/pronounce")
 def pronounce_word():
-    global current_word_idx, main_contest_words, temp_file_name
-    audio_data = open(temp_file_name, 'rb').read()
-    return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation.mp3')
+    global current_word_idx, main_contest_words
+    # Append a timestamp to the file name to force the browser to fetch a new file
+    timestamp = int(time.time())
+    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+    return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{current_word_idx}_{timestamp}.mp3')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
