@@ -84,8 +84,9 @@
             <input type="text" name="user_input" id="user_input" required>
             <br>
             <button type="button" onclick="pronounce_word();">Pronounce</button>
+            <!-- Add a random query parameter with a timestamp to the audio URL to prevent caching -->
             <audio id="audio-player" controls style="display: none;">
-                <source src="{{ url_for('pronounce_word') }}" type="audio/mpeg">
+                <source src="{{ url_for('pronounce_word') }}?t={{ Date.now() }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
             <button type="submit">Submit</button>
@@ -115,7 +116,7 @@
     </div>
     <script>
         function pronounce_word() {
-        var audio = new Audio("/pronounce");
+        var audio = new Audio("/pronounce?t=" + Date.now()); // Add a random query parameter with a timestamp to the audio URL to prevent caching
         audio.play();
     }
 
