@@ -77,7 +77,7 @@ def index():
 
     return render_template("index.html")
 
-# Route for the contest page
+# Inside the /contest route
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
     global current_word_idx, main_contest_words, wrong_words
@@ -106,7 +106,12 @@ def contest():
         if current_word_idx < len(main_contest_words):
             # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
+
+            # Add a timestamp to the URL to prevent caching
+            timestamp = int(time.time())
+            audio_url = f"/pronounce?timestamp={timestamp}"
+
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
         else:
             return redirect(url_for("index"))
 
@@ -129,7 +134,8 @@ def pronounce_word():
     if current_word_idx < len(main_contest_words):
         word = main_contest_words[current_word_idx]
         audio_data = generate_and_play_word(word)
-        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
+        timestamp = int(time.time())
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}_{timestamp}.mp3')
     else:
         return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
 
