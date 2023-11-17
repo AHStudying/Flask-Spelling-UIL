@@ -115,9 +115,9 @@
     </div>
     <script>
         function pronounce_word() {
-    var audio = new Audio("/pronounce?filename={{ pronunciation_filename }}");
-    audio.play();
-}
+        var audio = new Audio("/pronounce");
+        audio.play();
+    }
 
         function alt_pronunciation() {
             fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
