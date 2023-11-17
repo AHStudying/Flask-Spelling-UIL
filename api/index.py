@@ -8,6 +8,8 @@ import time  # Import the time module
 
 app = Flask(__name__)
 
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 # Load word list
 def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
