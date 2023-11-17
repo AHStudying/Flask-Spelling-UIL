@@ -7,7 +7,6 @@ import io
 import time  # Import the time module
 
 app = Flask(__name__)
-
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Load word list
@@ -72,9 +71,10 @@ def index():
 
         # Generate and play the pronunciation for the first word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data,
+                               cache_timeout=0)
 
-    return render_template("index.html")
+    return render_template("index.html", cache_timeout=0)
 
 # Route for the contest page
 @app.route("/contest", methods=["GET", "POST"])
@@ -93,14 +93,16 @@ def contest():
         if current_word_idx < len(main_contest_words):
             # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data,
+                                   cache_timeout=0)
         else:
             return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
         # Generate and play the pronunciation for the current word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data,
+                               cache_timeout=0)
     else:
         return redirect(url_for("index"))
 
@@ -111,9 +113,19 @@ def pronounce_word():
     if current_word_idx < len(main_contest_words):
         word = main_contest_words[current_word_idx]
         audio_data = generate_and_play_word(word)
-        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3',
+                         cache_timeout=0)
     else:
-        return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
+        return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3',
+                         cache_timeout=0)
+
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
