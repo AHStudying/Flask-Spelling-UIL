@@ -84,10 +84,15 @@
             <input type="text" name="user_input" id="user_input" required>
             <br>
             <button type="button" onclick="pronounce_word();">Pronounce</button>
-            <audio id="audio-player" controls style="display: none;">
-                <source src="{{ url_for('pronounce_word') }}#{{ new Date().getTime() }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+            <script>
+    const audioUrl = "{{ url_for('pronounce_word') }}#" + new Date().getTime();
+    document.getElementById("audio-source").src = audioUrl;
+</script>
+
+<audio id="audio-player" controls style="display: none;">
+    <source id="audio-source" src="" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
             <button type="submit">Submit</button>
         </form>
         <div>
