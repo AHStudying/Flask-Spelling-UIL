@@ -85,9 +85,9 @@
             <br>
             <button type="button" onclick="pronounce_word();">Pronounce</button>
             <audio id="audio-player" controls style="display: none;">
-                <source src="{{ url_for('pronounce_word') }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
+    <source src="{{ audio_url }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
             <button type="submit">Submit</button>
         </form>
         <div>
