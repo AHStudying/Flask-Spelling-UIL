@@ -115,7 +115,7 @@
     </div>
     <script>
     function pronounce_word(tempFileName) {
-        var audio = new Audio("/pronounce/" + tempFileName);
+        var audio = new Audio("{{ url_for('pronounce_word', temp_file_name=tempFileName) }}");
         audio.play();
     }
 
