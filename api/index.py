@@ -59,7 +59,7 @@ def check_word(user_input):
 # Route for the home page
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global current_word_idx, main_contest_words, wrong_words, pronunciation_filename
+    global current_word_idx, main_contest_words, wrong_words
 
     if request.method == "POST":
         start_index = int(request.form["start_index"])
@@ -70,7 +70,6 @@ def index():
 
         # Generate and play the pronunciation for the first word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        pronunciation_filename = temp_file.name
         return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
 
     return render_template("index.html")
@@ -105,7 +104,7 @@ def contest():
 
 @app.route("/pronounce")
 def pronounce_word():
-    global current_word_idx, main_contest_words, pronunciation_filename
+    global current_word_idx, main_contest_words
 
     if current_word_idx < len(main_contest_words):
         word = main_contest_words[current_word_idx]
