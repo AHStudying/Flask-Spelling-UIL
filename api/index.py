@@ -111,9 +111,9 @@ def pronounce_word():
     if current_word_idx < len(main_contest_words):
         word = main_contest_words[current_word_idx]
         audio_data = generate_and_play_word(word)
-        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3', cache_timeout=0)
     else:
-        return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
+        return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3', cache_timeout=0)
 
 if __name__ == "__main__":
     app.run(debug=True)
