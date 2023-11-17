@@ -83,9 +83,9 @@
             <label for="user_input">Type the word:</label>
             <input type="text" name="user_input" id="user_input" required>
             <br>
-            <button type="button" onclick="pronounce_word();">Pronounce</button>
+            <button type="button" onclick="pronounce_word('{{ temp_file_name }}');">Pronounce</button>
             <audio id="audio-player" controls style="display: none;">
-                <source src="{{ url_for('pronounce_word') }}" type="audio/mpeg">
+                <source src="{{ url_for('pronounce_word', temp_file_name=temp_file_name) }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
             <button type="submit">Submit</button>
