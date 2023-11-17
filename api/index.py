@@ -134,21 +134,9 @@ def pronounce_word():
 
     if current_word_idx < len(main_contest_words):
         word = main_contest_words[current_word_idx]
-        audio_data, audio_filename = generate_and_play_word(word)
-
-        # Encode the filename
-        encoded_filename = quote(audio_filename)
-
-        response_headers = {
-            'Content-Type': 'audio/mpeg',
-            'Content-Disposition': f'attachment; filename="{encoded_filename}"',
-            'Content-Length': len(audio_data),
-        }
-
-        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=encoded_filename, response_headers=response_headers)
-
+        audio_data = generate_and_play_word(word)
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
     else:
-        # Return an empty audio file if there are no more words
         return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
 
 if __name__ == "__main__":
