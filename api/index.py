@@ -33,7 +33,8 @@ def select_words(start_index, end_index, num_words=70):
 # Generate and play word pronunciation
 def generate_and_play_word(word):
     tts = gTTS(text=word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=f"_{word}.mp3", delete=False)
+    current_time = int(time.time())
+    temp_file = tempfile.NamedTemporaryFile(suffix=f"_{word}_{current_time}.mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
 
@@ -86,7 +87,19 @@ def contest():
         feedback = check_word(user_input)
 
         if feedback == True:
+            # User spelled the word correctly, generate new audio for the next word
             current_word_idx += 1
+
+            if current_word_idx < len(main_contest_words):
+                # Generate and play the pronunciation for the next word
+                audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+
+                # Add a timestamp to the URL to prevent caching
+                timestamp = int(time.time())
+                audio_url = f"/pronounce?timestamp={timestamp}"
+
+                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
+
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
@@ -100,7 +113,12 @@ def contest():
     if current_word_idx < len(main_contest_words):
         # Generate and play the pronunciation for the current word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+
+        # Add a timestamp to the URL to prevent caching
+        timestamp = int(time.time())
+        audio_url = f"/pronounce?timestamp={timestamp}"
+
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, audio_url=audio_url)
     else:
         return redirect(url_for("index"))
 
