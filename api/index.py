@@ -44,7 +44,7 @@ def generate_and_play_word(word):
     except PermissionError:
         pass
 
-    return audio_data
+    return audio_data, temp_file.name  # Return the audio data and the temporary file name
 
 # Check user input against the correct word
 def check_word(user_input):
@@ -71,8 +71,8 @@ def index():
         wrong_words = []
 
         # Generate and play the pronunciation for the first word
-        audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        audio_data, temp_file_name = generate_and_play_word(main_contest_words[current_word_idx])
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, temp_file_name=temp_file_name)
 
     return render_template("index.html")
 
@@ -86,34 +86,35 @@ def contest():
         feedback = check_word(user_input)
 
         if feedback == True:
+            # Increment word index and generate pronunciation for the next word
             current_word_idx += 1
+            audio_data, temp_file_name = generate_and_play_word(main_contest_words[current_word_idx])
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, temp_file_name=temp_file_name)
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
-            # Generate and play the pronunciation for the next word
-            audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
+            # Generate and play the pronunciation for the current word
+            audio_data, temp_file_name = generate_and_play_word(main_contest_words[current_word_idx])
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, temp_file_name=temp_file_name)
         else:
             return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
         # Generate and play the pronunciation for the current word
-        audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        audio_data, temp_file_name = generate_and_play_word(main_contest_words[current_word_idx])
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, temp_file_name=temp_file_name)
     else:
         return redirect(url_for("index"))
 
-@app.route("/pronounce")
-def pronounce_word():
-    global current_word_idx, main_contest_words
-
-    if current_word_idx < len(main_contest_words):
-        word = main_contest_words[current_word_idx]
-        audio_data = generate_and_play_word(word)
-        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{word}.mp3')
+@app.route("/pronounce/<temp_file_name>")
+def pronounce_word(temp_file_name):
+    temp_file_path = os.path.join(tempfile.gettempdir(), temp_file_name)
+    if os.path.exists(temp_file_path):
+        audio_data = open(temp_file_path, 'rb').read()
+        return send_file(io.BytesIO(audio_data), mimetype='audio/mpeg', as_attachment=True, download_name=f'pronunciation_{temp_file_name}.mp3')
     else:
         return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True)
