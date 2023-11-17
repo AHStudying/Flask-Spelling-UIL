@@ -114,24 +114,24 @@
         {% endif %}
     </div>
     <script>
-        function pronounce_word() {
-        var audio = new Audio("/pronounce");
+    function pronounce_word(tempFileName) {
+        var audio = new Audio("/pronounce/" + tempFileName);
         audio.play();
     }
 
-        function alt_pronunciation() {
-            fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
+    function alt_pronunciation() {
+        fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
+    }
+
+    window.addEventListener('load', function () {
+        document.getElementById('user_input').focus();
+    });
+
+    document.getElementById('user_input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && e.shiftKey) {
+            pronounce_word('{{ temp_file_name }}');
         }
-
-        window.addEventListener('load', function() {
-            document.getElementById('user_input').focus();
-        });
-
-        document.getElementById('user_input').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && e.shiftKey) {
-                pronounce_word();
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
