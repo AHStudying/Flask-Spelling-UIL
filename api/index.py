@@ -31,7 +31,7 @@ def select_words(start_index, end_index, num_words=70):
 # Generate and play word pronunciation
 def generate_and_play_word(word):
     tts = gTTS(text=word, lang='en')
-    temp_file = tempfile.NamedTemporaryFile(suffix=f"_{word}.mp3", delete=False)
+    temp_file = tempfile.NamedTemporaryFile(suffix=f"_{word}_{random.randint(0, 1000)}.mp3", delete=False)
     temp_file.close()
     tts.save(temp_file.name)
 
@@ -90,7 +90,7 @@ def contest():
 
         if current_word_idx < len(main_contest_words):
             # Generate and play the pronunciation for the next word
-            audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+            audio_data = generate_and_play_word(f"{main_contest_words[current_word_idx]}_{random.randint(0, 1000)}")
             return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data)
         else:
             return redirect(url_for("index"))
