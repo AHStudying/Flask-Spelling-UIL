@@ -83,9 +83,9 @@
             <label for="user_input">Type the word:</label>
             <input type="text" name="user_input" id="user_input" required>
             <br>
-            <button type="button" onclick="pronounce_word('{{ temp_file_name }}');">Pronounce</button>
+            <button type="button" onclick="pronounce_word();">Pronounce</button>
             <audio id="audio-player" controls style="display: none;">
-                <source src="{{ url_for('pronounce_word', temp_file_name=temp_file_name) }}" type="audio/mpeg">
+                <source src="{{ url_for('pronounce_word') }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
             <button type="submit">Submit</button>
@@ -114,24 +114,24 @@
         {% endif %}
     </div>
     <script>
-    function pronounce_word(tempFileName) {
-        var audio = new Audio("{{ url_for('pronounce_word', temp_file_name=tempFileName) }}");
+        function pronounce_word() {
+        var audio = new Audio("/pronounce");
         audio.play();
     }
 
-    function alt_pronunciation() {
-        fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
-    }
-
-    window.addEventListener('load', function () {
-        document.getElementById('user_input').focus();
-    });
-
-    document.getElementById('user_input').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && e.shiftKey) {
-            pronounce_word('{{ temp_file_name }}');
+        function alt_pronunciation() {
+            fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
         }
-    });
-</script>
+
+        window.addEventListener('load', function() {
+            document.getElementById('user_input').focus();
+        });
+
+        document.getElementById('user_input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                pronounce_word();
+            }
+        });
+    </script>
 </body>
 </html>
