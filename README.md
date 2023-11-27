@@ -1,3 +1,3 @@
-# It only took me 143 commits.
+# On screen accent keyboard?
 
-Only works for the first word, and only pronunciation (normal) for now haha.
+Finally working.
