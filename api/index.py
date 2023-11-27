@@ -72,6 +72,7 @@ def index():
 
     return render_template("index.html")
 
+# Inside the /contest route
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
     global current_word_idx, main_contest_words, wrong_words
@@ -83,23 +84,27 @@ def contest():
         if feedback == True:
             if user_input == main_contest_words[current_word_idx]:
                 current_word_idx += 1
+                correct_on_first_attempt = True
+            else:
+                correct_on_first_attempt = False
 
-                if current_word_idx < len(main_contest_words):
-                    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-                    timestamp = int(time.time())
-                    audio_url = f"/pronounce?timestamp={timestamp}"
+            if current_word_idx < len(main_contest_words):
+                audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+                timestamp = int(time.time())
+                audio_url = f"/pronounce?timestamp={timestamp}"
 
-                    return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
+                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url, correct_on_first_attempt=correct_on_first_attempt)
 
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
+            correct_on_first_attempt = False
 
         if current_word_idx < len(main_contest_words):
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
             timestamp = int(time.time())
             audio_url = f"/pronounce?timestamp={timestamp}"
 
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url, correct_on_first_attempt=correct_on_first_attempt)
         else:
             return redirect(url_for("index"))
 
