@@ -21,7 +21,6 @@ current_word_idx = 0
 main_contest_words = []
 wrong_words = []
 
-# Select words for the contest
 def select_words(start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
@@ -30,7 +29,6 @@ def select_words(start_index, end_index, num_words=70):
     else:
         return []
 
-# Generate and play word pronunciation
 def generate_and_play_word(word):
     tts = gTTS(text=word, lang='en')
     current_time = int(time.time())
@@ -47,7 +45,6 @@ def generate_and_play_word(word):
 
     return audio_data
 
-# Check user input against the correct word
 def check_word(user_input):
     global current_word_idx, main_contest_words
 
@@ -59,7 +56,6 @@ def check_word(user_input):
             return feedback
     return False
 
-# Route for the home page
 @app.route("/", methods=["GET", "POST"])
 def index():
     global current_word_idx, main_contest_words, wrong_words
@@ -71,13 +67,11 @@ def index():
         current_word_idx = 0
         wrong_words = []
 
-        # Generate and play the pronunciation for the first word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
         return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
 
     return render_template("index.html")
 
-# Inside the /contest route
 @app.route("/contest", methods=["GET", "POST"])
 def contest():
     global current_word_idx, main_contest_words, wrong_words
@@ -87,27 +81,21 @@ def contest():
         feedback = check_word(user_input)
 
         if feedback == True:
-            # User spelled the word correctly, generate new audio for the next word
-            current_word_idx += 1
+            if user_input == main_contest_words[current_word_idx]:
+                current_word_idx += 1
 
-            if current_word_idx < len(main_contest_words):
-                # Generate and play the pronunciation for the next word
-                audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+                if current_word_idx < len(main_contest_words):
+                    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+                    timestamp = int(time.time())
+                    audio_url = f"/pronounce?timestamp={timestamp}"
 
-                # Add a timestamp to the URL to prevent caching
-                timestamp = int(time.time())
-                audio_url = f"/pronounce?timestamp={timestamp}"
-
-                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
+                    return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
 
         else:
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
-            # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-
-            # Add a timestamp to the URL to prevent caching
             timestamp = int(time.time())
             audio_url = f"/pronounce?timestamp={timestamp}"
 
@@ -116,10 +104,7 @@ def contest():
             return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
-        # Generate and play the pronunciation for the current word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-
-        # Add a timestamp to the URL to prevent caching
         timestamp = int(time.time())
         audio_url = f"/pronounce?timestamp={timestamp}"
 
