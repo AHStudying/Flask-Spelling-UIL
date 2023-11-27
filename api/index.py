@@ -81,30 +81,22 @@ def contest():
         user_input = request.form["user_input"]
         feedback = check_word(user_input)
 
-        if feedback == True:
-            if user_input == main_contest_words[current_word_idx]:
-                current_word_idx += 1
-                correct_on_first_attempt = True
-            else:
-                correct_on_first_attempt = False
-
-            if current_word_idx < len(main_contest_words):
-                audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-                timestamp = int(time.time())
-                audio_url = f"/pronounce?timestamp={timestamp}"
-
-                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url, correct_on_first_attempt=correct_on_first_attempt)
-
+        if feedback == True and user_input == main_contest_words[current_word_idx]:
+            current_word_idx += 1
+            score = current_word_idx
+            correct_on_first_attempt = True
         else:
-            wrong_words.append((main_contest_words[current_word_idx], user_input))
+            score = current_word_idx - 1
             correct_on_first_attempt = False
+            wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
             timestamp = int(time.time())
             audio_url = f"/pronounce?timestamp={timestamp}"
 
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url, correct_on_first_attempt=correct_on_first_attempt)
+            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url, score=score, correct_on_first_attempt=correct_on_first_attempt)
+
         else:
             return redirect(url_for("index"))
 
@@ -113,7 +105,7 @@ def contest():
         timestamp = int(time.time())
         audio_url = f"/pronounce?timestamp={timestamp}"
 
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, audio_url=audio_url)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, audio_url=audio_url, score=0)
     else:
         return redirect(url_for("index"))
 
