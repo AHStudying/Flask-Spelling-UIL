@@ -91,7 +91,7 @@
             <button type="submit">Submit</button>
         </form>
         <div>
-            <p>Score: {{ current_word_idx }}/{{ total_words }}</p>
+            <p>Score: {% if correct_on_first_attempt %}{{ current_word_idx }}{% else %}{{ current_word_idx - 1 }}{% endif %}/{{ total_words }}</p>
         </div>
         <div>
             <h2>Wrong Words:</h2>
