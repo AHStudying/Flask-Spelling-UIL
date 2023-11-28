@@ -189,13 +189,15 @@
                 pos2 = pos4 - e.clientY;
                 pos3 = e.clientX;
                 pos4 = e.clientY;
+
                 var newTop = elmnt.offsetTop - pos2;
                 var newLeft = elmnt.offsetLeft - pos1;
                 var newBottom = newTop + elmnt.clientHeight;
-
+            
                 // Ensure the element stays within the viewport
                 if (newTop >= 0 && newBottom <= window.innerHeight) {
                     elmnt.style.top = newTop + "px";
+                    elmnt.style.bottom = "auto";  // Reset 'bottom' to 'auto' when moving
                 }
 
                 // Ensure the element stays within the viewport horizontally
@@ -203,6 +205,7 @@
                     elmnt.style.left = newLeft + "px";
                 }
             }
+
 
             function closeDragElement() {
                 document.onmouseup = null;
