@@ -73,6 +73,20 @@
             font-size: 14px;
             color: #888;
         }
+        .accented-keyboard {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #777;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: move;
+        }
+        .accented-keyboard button {
+            font-size: 16px;
+            margin: 0 5px;
+            padding: 5px 10px;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +119,10 @@
     <div class="tip">
         <p>Tip: Hold Shift and press Enter in the text box to pronounce the word.</p>
     </div>
+    <div class="accented-keyboard" draggable="true" id="accentedKeyboard">
+        <button onclick="insertAccent('á')">á</button>
+        <button onclick="insertAccent('é')">é</button>
+    </div>
     <div class="credits">
         <p>Credits to <a href="https://github.com/Calc-oholic/">Calc-oholic</a></p>
     </div>
@@ -115,13 +133,12 @@
     </div>
     <script>
         function pronounce_word() {
-    var audio = document.getElementById('audio-player');
-    var audioUrl = "/pronounce?" + new Date().getTime(); // Append a timestamp to the URL
-    audio.src = audioUrl;
-    audio.load();
-    audio.play();
-}
-
+            var audio = document.getElementById('audio-player');
+            var audioUrl = "/pronounce?" + new Date().getTime(); // Append a timestamp to the URL
+            audio.src = audioUrl;
+            audio.load();
+            audio.play();
+        }
 
         function alt_pronunciation() {
             fetch('/alt_pronunciation').then(response => response.text()).then(data => console.log(data));
@@ -136,6 +153,49 @@
                 pronounce_word();
             }
         });
+
+        dragElement(document.getElementById("accentedKeyboard"));
+
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id)) {
+                // if present, the header is where you move the DIV from:
+                document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+            } else {
+                // otherwise, move the DIV from anywhere inside the DIV:
+                elmnt.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
     </script>
 </body>
 </html>
