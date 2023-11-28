@@ -154,44 +154,53 @@
             }
         });
 
+        function insertAccent(accent) {
+            var inputBox = document.getElementById('user_input');
+            var startPos = inputBox.selectionStart;
+            var endPos = inputBox.selectionEnd;
+            var textBefore = inputBox.value.substring(0, startPos);
+            var textAfter = inputBox.value.substring(endPos, inputBox.value.length);
+            inputBox.value = textBefore + accent + textAfter;
+            inputBox.setSelectionRange(startPos + accent.length, startPos + accent.length);
+            inputBox.focus();
+        }
+
         dragElement(document.getElementById("accentedKeyboard"));
 
         function dragElement(elmnt) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             if (document.getElementById(elmnt.id)) {
-                // if present, the header is where you move the DIV from:
-                document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+                elmnt.onmousedown = dragMouseDown;
             } else {
-                // otherwise, move the DIV from anywhere inside the DIV:
                 elmnt.onmousedown = dragMouseDown;
             }
 
             function dragMouseDown(e) {
-                e = e || window.event;
                 e.preventDefault();
-                // get the mouse cursor position at startup:
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 document.onmouseup = closeDragElement;
-                // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
             }
 
             function elementDrag(e) {
-                e = e || window.event;
                 e.preventDefault();
-                // calculate the new cursor position:
                 pos1 = pos3 - e.clientX;
                 pos2 = pos4 - e.clientY;
                 pos3 = e.clientX;
                 pos4 = e.clientY;
-                // set the element's new position:
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                var newTop = elmnt.offsetTop - pos2;
+                var newLeft = elmnt.offsetLeft - pos1;
+                // Ensure the element stays within the viewport
+                if (newTop >= 0 && newTop + elmnt.clientHeight <= window.innerHeight) {
+                    elmnt.style.top = newTop + "px";
+                }
+                if (newLeft >= 0 && newLeft + elmnt.clientWidth <= window.innerWidth) {
+                    elmnt.style.left = newLeft + "px";
+                }
             }
 
             function closeDragElement() {
-                // stop moving when mouse button is released:
                 document.onmouseup = null;
                 document.onmousemove = null;
             }
