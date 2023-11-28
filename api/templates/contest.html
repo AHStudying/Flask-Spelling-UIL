@@ -99,9 +99,9 @@
             <br>
             <button type="button" onclick="pronounce_word();">Pronounce</button>
             <audio id="audio-player" controls style="display: none;">
-    <source src="{{ audio_url }}" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+                <source src="{{ audio_url }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
             <button type="submit">Submit</button>
         </form>
         <div>
@@ -191,10 +191,14 @@
                 pos4 = e.clientY;
                 var newTop = elmnt.offsetTop - pos2;
                 var newLeft = elmnt.offsetLeft - pos1;
+                var newBottom = newTop + elmnt.clientHeight;
+
                 // Ensure the element stays within the viewport
-                if (newTop >= 0 && newTop + elmnt.clientHeight <= window.innerHeight) {
+                if (newTop >= 0 && newBottom <= window.innerHeight) {
                     elmnt.style.top = newTop + "px";
                 }
+
+                // Ensure the element stays within the viewport horizontally
                 if (newLeft >= 0 && newLeft + elmnt.clientWidth <= window.innerWidth) {
                     elmnt.style.left = newLeft + "px";
                 }
