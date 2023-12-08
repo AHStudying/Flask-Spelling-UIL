@@ -1,4 +1,4 @@
-{ eee
+{
     "rewrites": [
         { "source": "/(.*)", "destination": "/api/index" }
     ]
