@@ -108,11 +108,11 @@
             <p>Score: {{ current_word_idx }}/{{ total_words }}</p>
         </div>
         <div>
-            <h2>Wrong Words:</h2>
+            <h2>Feedback:</h2>
             <ul>
-                {% for word, input in wrong_words %}
-                    <li>{{ word[0] }} (You typed: {{ input }}) - Correct Answer: {{ word[1] }}</li>
-                {% endfor %}
+                {% if feedback %}
+                    <p>{{ feedback }}</p>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -133,11 +133,6 @@
     </div>
     <div class="credits">
         <p>Credits to <a href="https://github.com/Calc-oholic/">Calc-oholic</a></p>
-    </div>
-    <div>
-        {% if feedback %}
-            <p>{{ feedback }}</p>
-        {% endif %}
     </div>
     <script>
         function pronounce_word() {
