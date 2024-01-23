@@ -101,7 +101,7 @@ avaricious
 ayatollah
 baccalaureate
 bagasse
-Baha’i
+Baha'i
 balbriggan (fabric)
 baldachin
 balmacaan
@@ -263,7 +263,7 @@ corniculate
 cornucopia
 correlative
 cosmetology
-Côte d’Azur
+Côte d'Azur
 countercyclical
 counterespionage
 counterpane
@@ -397,7 +397,7 @@ enmity
 enouncement
 ensconce
 Entebbe
-entr’acte
+entr'acte
 envenomed
 epaulet, epaulette
 epicurism
@@ -507,7 +507,7 @@ gonfalonier
 goshawk
 gourmand
 grandstanding
-Graves’ disease
+Graves' disease
 Grendel
 grisette
 grommet
@@ -544,7 +544,7 @@ hexahedron
 hierarchical
 hippocampus
 hircine
-Hobson’s choice
+Hobson's choice
 holystone
 Homeric
 Honolulu
@@ -656,14 +656,14 @@ kinswoman
 kittiwake
 Knight Templar
 knurl
-Korsakoff’s syndrome
+Korsakoff's syndrome
 Krugerrand
 kuchen
 kylix
 Kyoto
 Lacedaemon
 laetrile
-Lag b’Omer
+Lag b'Omer
 lamasery
 lambda
 lancinating
@@ -707,7 +707,7 @@ locum tenens
 logogriph
 loose-leaf
 Lorelei
-Lou Gehrig’s disease
+Lou Gehrig's disease
 lozenge
 Luddite
 luge
@@ -848,7 +848,7 @@ Nigerian
 nihilism, Nihilism
 nirvana, Nirvana
 niveous
-no man’s land
+no man's land
 noblesse oblige
 noli-me-tangere
 non grata
@@ -877,7 +877,7 @@ odontology
 offal
 officiousness
 ogreish
-Ohm’s law
+Ohm's law
 oleaginous
 Oligocene
 Olivier
@@ -911,7 +911,7 @@ overextend
 oxbow
 oysters Rockefeller
 ozonize
-pa’anga
+pa'anga
 pachisi
 pachyderm
 paillard
@@ -1041,7 +1041,7 @@ pretentious
 preternatural
 prime mover
 primordial
-printer’s devil
+printer's devil
 prioritize
 probity
 proclivity
@@ -1069,7 +1069,7 @@ punitive
 purulence
 pyrography
 Pythagorean theorem
-quadraphonic,
+quadraphonic
 quadrumanous
 Quantico
 quantitative
@@ -1084,7 +1084,7 @@ quodlibet
 Rabelaisian
 radiolucent
 raglan
-raison d’être (singular)
+raison d'être (singular)
 rampageous
 rancorous
 rapier
@@ -1147,7 +1147,7 @@ Robespierre
 rocambole
 Roche limit
 roentgenography
-rogues’ gallery
+rogues' gallery
 role-playing
 rondeau
 rosaceous
@@ -1269,7 +1269,7 @@ spumoni, spumone
 Sri Lanka
 stalagmite
 stalwart
-staphylococcus,
+staphylococcus
 starveling
 stellar wind
 stephanotis, Stephanotis
@@ -1366,7 +1366,7 @@ trilateralism
 trimaran
 triptych
 trochaic
-trompe l’oeil (singular)
+trompe l'oeil (singular)
 trousseau
 trysail
 T-square
@@ -1466,9 +1466,9 @@ whited sepulcher
 widget
 wind shear
 window-shop
-wisenheimer,
+wisenheimer
 Worcestershire sauce
-worm’s-eye view
+worm's-eye view
 worst-case
 wrasse
 wrathfulness
