@@ -20,3 +20,7 @@ You can set it up on vercel yourself (I will make instructions soon).
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT), which means you're free to use, modify, and distribute the code. Attribution is appreciated but not required.
+
+## Credits
+
+UIL Spelling Team @ Argyle High School
