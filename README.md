@@ -17,10 +17,13 @@ A simple and intuitive web application that helps you study Spelling UIL words b
  
 You can set it up on vercel yourself (I will make instructions soon).
 
-## License
+## Badges
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT), which means you're free to use, modify, and distribute the code. Attribution is appreciated but not required.
 
-## Credits
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-UIL Spelling Team @ Argyle High School
+## Authors
+
+- [@Calc-oholic](https://www.github.com/Calc-oholic)
+- [@A-Singh-er](https://www.github.com/A-Singh-er)
+- [Argyle HS Spelling Team](https://ahs.argyleisd.com)
