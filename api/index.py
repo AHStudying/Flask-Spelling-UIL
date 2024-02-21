@@ -52,10 +52,12 @@ def check_word(user_input):
     global current_word_idx, main_contest_words
 
     if current_word_idx < len(main_contest_words):
-        if user_input == main_contest_words[current_word_idx]:
+        correct_words = [word.strip() for word in main_contest_words[current_word_idx].split(",")]
+        
+        if user_input in correct_words:
             return True
         else:
-            feedback = f"Incorrect. Correct answer: '{main_contest_words[current_word_idx]}'"
+            feedback = f"Incorrect. Correct answer: '{', '.join(correct_words)}'"
             return feedback
     return False
 
