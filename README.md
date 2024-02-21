@@ -10,8 +10,6 @@ A simple and intuitive web application that helps you study Spelling UIL words b
 - Instant spell-check functionality
 - On-screen accent keyboard
 - Choose from multiple word sets to study
-- Easy-to-use and pleasing user interface
-- Fast and seamless performance
 
 ## Setup Instructions
 
