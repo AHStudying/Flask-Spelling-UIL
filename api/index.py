@@ -15,7 +15,7 @@ def load_word_list(filename):
     with open(filename, "r", encoding="utf-8") as file:
         return [line.strip() for line in file]
 
-word_list = load_word_list("words.txt")
+word_list = load_word_list("otherwords.txt")
 
 current_word_idx = 0
 main_contest_words = []
