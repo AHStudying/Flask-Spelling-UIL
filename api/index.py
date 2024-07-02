@@ -83,7 +83,15 @@ def index():
         start_index = int(request.form["start_index"])
         end_index = int(request.form["end_index"])
         word_list = load_word_list(filename)
+
+        if not word_list:
+            return render_template("index.html", file_names=file_names, error_message=f"Failed to load word list from '{filename}'.")
+
         main_contest_words = select_words(word_list, start_index, end_index, num_words=70)
+        
+        if not main_contest_words:
+            return render_template("index.html", file_names=file_names, error_message=f"Failed to select words from '{filename}'. Please check your indices.")
+
         current_word_idx = 0
         wrong_words = []
 
