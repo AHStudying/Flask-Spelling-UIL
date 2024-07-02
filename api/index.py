@@ -12,8 +12,19 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Load word list
 def load_word_list(filename):
-    with open(filename, "r", encoding="utf-8") as file:
-        return [line.strip() for line in file]
+    file_path = os.path.join(os.path.dirname(__file__), filename)
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            return [line.strip() for line in file]
+    except FileNotFoundError:
+        print(f"File '{filename}' not found.")
+        return []
+    except IOError as e:
+        print(f"Error reading file '{filename}': {e}")
+        return []
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return []
 
 current_word_idx = 0
 main_contest_words = []
