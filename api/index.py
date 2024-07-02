@@ -12,12 +12,14 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Load word list
 def load_word_list(filename):
-    file_path = os.path.join(os.path.dirname(__file__), filename)
+
+    directory_path = os.path.dirname(os.path.abspath(__file__))  # Get current dir
+    file_path = os.path.join(directory_path, filename)
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             return [line.strip() for line in file]
     except FileNotFoundError:
-        print(f"File '{filename}' not found.")
+        print(f"File '{filename}' not found in '{directory_path}'.")
         return []
     except IOError as e:
         print(f"Error reading file '{filename}': {e}")
