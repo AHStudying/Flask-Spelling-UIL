@@ -87,6 +87,13 @@
             <div class="range-slider" id="range-slider"></div>
         </div>
         <form method="POST">
+            <label for="filename">Select File:</label>
+            <select name="filename" id="filename" required>
+                {% for file in file_names %}
+                    <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+            <br>
             <label for="start_index">Start Index:</label>
             <input type="number" name="start_index" id="start_index" required>
             <br>
