@@ -66,18 +66,22 @@ def check_word(user_input):
 def index():
     global current_word_idx, main_contest_words, wrong_words
 
+    file_names = ["2019.txt", "2020.txt", "2021.txt", "2022.txt", "2023.txt", "2024.txt"]  # Update with your actual file names or a dynamic list
+
     if request.method == "POST":
+        filename = request.form["filename"]
         start_index = int(request.form["start_index"])
         end_index = int(request.form["end_index"])
+        word_list = load_word_list(filename)
         main_contest_words = select_words(start_index, end_index, num_words=70)
         current_word_idx = 0
         wrong_words = []
 
         # Generate and play the pronunciation for the first word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data)
+        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, file_names=file_names)
 
-    return render_template("index.html")
+    return render_template("index.html", file_names=file_names)
 
 # Inside the /contest route
 @app.route("/contest", methods=["GET", "POST"])
