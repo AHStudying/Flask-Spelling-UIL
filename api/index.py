@@ -64,7 +64,9 @@ def check_word(user_input):
     if current_word_idx < len(main_contest_words):
         correct_words = [word.strip() for word in main_contest_words[current_word_idx].split(",")]
         
-        if user_input in correct_words:
+        user_inputs = [input.strip() for input in user_input.split(",")]
+
+        if all(input in correct_words for input in user_inputs):
             return True
         else:
             feedback = f"Incorrect. Correct answer: '{', '.join(correct_words)}'"
