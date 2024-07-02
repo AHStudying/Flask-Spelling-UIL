@@ -4,7 +4,7 @@ from gtts import gTTS
 import os
 import tempfile
 import io
-import time  # Import the time module
+import time
 
 app = Flask(__name__)
 
@@ -12,8 +12,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Load word list
 def load_word_list(filename):
-
-    directory_path = os.path.dirname(os.path.abspath(__file__))  # Get current dir
+    directory_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(directory_path, filename)
     try:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -33,7 +32,7 @@ main_contest_words = []
 wrong_words = []
 
 # Select words for the contest
-def select_words(start_index, end_index, num_words=70):
+def select_words(word_list, start_index, end_index, num_words=70):
     if 1 <= start_index <= end_index <= len(word_list):
         selected_words = word_list[start_index - 1:end_index]
         random.shuffle(selected_words)
@@ -77,18 +76,17 @@ def check_word(user_input):
 def index():
     global current_word_idx, main_contest_words, wrong_words
 
-    file_names = ["2019.txt", "2020.txt", "2021.txt", "2022.txt", "2023.txt", "2024.txt"]  # Update with your actual file names or a dynamic list
+    file_names = ["2019.txt", "2020.txt", "2021.txt", "2022.txt", "2023.txt", "2024.txt"]
 
     if request.method == "POST":
         filename = request.form["filename"]
         start_index = int(request.form["start_index"])
         end_index = int(request.form["end_index"])
         word_list = load_word_list(filename)
-        main_contest_words = select_words(start_index, end_index, num_words=70)
+        main_contest_words = select_words(word_list, start_index, end_index, num_words=70)
         current_word_idx = 0
         wrong_words = []
 
-        # Generate and play the pronunciation for the first word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
         return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, file_names=file_names)
 
@@ -104,14 +102,10 @@ def contest():
         feedback = check_word(user_input)
 
         if feedback == True:
-            # User spelled the word correctly, generate new audio for the next word
             current_word_idx += 1
 
             if current_word_idx < len(main_contest_words):
-                # Generate and play the pronunciation for the next word
                 audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-
-                # Add a timestamp to the URL to prevent caching
                 timestamp = int(time.time())
                 audio_url = f"/pronounce?timestamp={timestamp}"
 
@@ -121,10 +115,7 @@ def contest():
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
         if current_word_idx < len(main_contest_words):
-            # Generate and play the pronunciation for the next word
             audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-
-            # Add a timestamp to the URL to prevent caching
             timestamp = int(time.time())
             audio_url = f"/pronounce?timestamp={timestamp}"
 
@@ -133,10 +124,7 @@ def contest():
             return redirect(url_for("index"))
 
     if current_word_idx < len(main_contest_words):
-        # Generate and play the pronunciation for the current word
         audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-
-        # Add a timestamp to the URL to prevent caching
         timestamp = int(time.time())
         audio_url = f"/pronounce?timestamp={timestamp}"
 
@@ -157,4 +145,4 @@ def pronounce_word():
         return send_file(io.BytesIO(b""), mimetype='audio/mpeg', as_attachment=True, download_name='pronunciation_placeholder.mp3')
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True)
