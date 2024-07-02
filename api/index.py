@@ -76,7 +76,7 @@ def check_word(user_input):
 def index():
     global current_word_idx, main_contest_words, wrong_words
 
-    file_names = ["2019.txt", "2020.txt", "2021.txt", "2022.txt", "2023.txt", "2024.txt"]
+    file_names = ["2024.txt", "2023.txt", "2022.txt", "2021.txt", "2020.txt", "2019.txt"]
 
     if request.method == "POST":
         filename = request.form["filename"]
