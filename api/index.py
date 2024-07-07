@@ -115,32 +115,26 @@ def contest():
             current_word_idx += 1
 
             if current_word_idx < len(main_contest_words):
+                # Generate and play pronunciation for the next word
                 audio_data = generate_and_play_word(main_contest_words[current_word_idx])
                 timestamp = int(time.time())
                 audio_url = f"/pronounce?timestamp={timestamp}"
 
-                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
+                return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, audio_url=audio_url)
+            else:
+                # No more words left, redirect to index
+                return redirect(url_for("index"))
 
         else:
+            # Handle incorrect input
             wrong_words.append((main_contest_words[current_word_idx], user_input))
 
-        if current_word_idx < len(main_contest_words):
-            audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-            timestamp = int(time.time())
-            audio_url = f"/pronounce?timestamp={timestamp}"
+    # Generate and play pronunciation for the current word
+    audio_data = generate_and_play_word(main_contest_words[current_word_idx])
+    timestamp = int(time.time())
+    audio_url = f"/pronounce?timestamp={timestamp}"
 
-            return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
-        else:
-            return redirect(url_for("index"))
-
-    if current_word_idx < len(main_contest_words):
-        audio_data = generate_and_play_word(main_contest_words[current_word_idx])
-        timestamp = int(time.time())
-        audio_url = f"/pronounce?timestamp={timestamp}"
-
-        return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=None, audio_data=audio_data, audio_url=audio_url)
-    else:
-        return redirect(url_for("index"))
+    return render_template("contest.html", current_word_idx=current_word_idx, total_words=len(main_contest_words), feedback=feedback, audio_data=audio_data, audio_url=audio_url)
 
 @app.route("/pronounce")
 def pronounce_word():
