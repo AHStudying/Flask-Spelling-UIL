@@ -40,7 +40,7 @@ alla breve
 allude
 altazimuth
 altruistic
-Alzheimer’s disease
+Alzheimer's disease
 amarelle
 Americanize
 amoxicillin
@@ -477,7 +477,7 @@ fluoroscopy
 fluvial
 folderol
 fomite
-fool’s errand
+fool's errand
 force majeure
 formaldehyde
 fractionalize
@@ -632,7 +632,7 @@ isotope
 itemization
 iterate
 jaçana
-Jacob’s ladder
+Jacob's ladder
 jai alai
 Jaipur
 Janus
@@ -1181,7 +1181,7 @@ saccharide
 sacher torte
 sadhu, saddhu
 sagittate
-Saint Elmo’s fire
+Saint Elmo's fire
 Saint-Tropez
 salchow
 sallet
@@ -1471,7 +1471,7 @@ Windsor knot
 wiretap
 wisteria, Wisteria
 wondrous
-woolsorter’s disease
+woolsorter's disease
 wordsmith
 worry beads
 writ of error
