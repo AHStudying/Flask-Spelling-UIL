@@ -104,6 +104,15 @@
             </audio>
             <button type="submit">Submit</button>
         </form>
+        <script>
+            {% if feedback %}
+                var audio = document.getElementById('audio-player');
+                var audioUrl = "{{ audio_url }}";
+                audio.src = audioUrl;
+                audio.load();
+                audio.play();
+            {% endif %}
+        </script>
         <div>
             <p>Score: {{ current_word_idx }}/{{ total_words }}</p>
         </div>
